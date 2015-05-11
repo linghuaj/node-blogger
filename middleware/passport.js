@@ -11,7 +11,7 @@ module.exports = (app) => {
     return await User.promise.findById(id)
   }))
 
-  passport.use(new LocalStrategy({
+  passport.use('local-login', new LocalStrategy({
     // Use "email" field instead of "username"
     usernameField: 'username',
     failureFlash: true
@@ -27,8 +27,6 @@ module.exports = (app) => {
         username: {$regex: regexp}
       })
     }
-
-    //console.log("local login user", user)
 
     if (!user) return [false, {message: 'Invalid username or email'}]
     if (username.indexOf('@') >= 0 ) {
@@ -54,6 +52,7 @@ module.exports = (app) => {
     passReqToCallback: true
   }, nodeifyit(async (req, email, password) => {
     let {username, title, description} = req.body
+    //build a case insensitive query
     let regexp = new RegExp(username, 'i')
     let query = {username: {$regex: regexp}}
     email = (email || '').toLowerCase()
@@ -73,7 +72,7 @@ module.exports = (app) => {
     user.username = username
     user.blogTitle = title
     user.blogDescription = description
-    user.password = await user.generateHash(password)
+    user.password = password
 
      try {
       return await user.save()

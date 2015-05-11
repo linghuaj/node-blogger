@@ -43,4 +43,19 @@ module.exports = (app) => {
         req.logout()
         res.redirect('/')
     })
+
+
+
+    app.get('/post/:postId?', (req, res) => {
+        let postId = req.params.postId
+        if (!postId){
+          res.render('post.ejs', {
+            post: {},
+            verb: 'Create'
+        })
+
+        }
+
+    })
+
 }
