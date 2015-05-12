@@ -33,7 +33,7 @@
     <div class="page-header text-center">
         <h1><span class="fa fa-user"></span> Profile Page</h1>
         <a href="/logout" class="btn btn-default btn-sm">Logout</a>
-        <a href="/post" class="btn btn-default btn-sm">Create New Post</a>
+        <a href="/posts" class="btn btn-default btn-sm">View All Posts</a>
     </div>
 
     <% if (typeof message !== 'undefined' && message.length > 0) { %>
@@ -54,7 +54,8 @@
         </div>
     </div>
 
- <div class="row"> <strong>Posts</strong></div>
+ <div class="row"> <strong>My Posts</strong></div>
+        <a href="/post" class="btn btn-default btn-sm">Create New Post</a>
         <table class="table"> 
         <thead>
           <tr>

@@ -27,3 +27,5 @@ Time spent: `<12 hours>`
 #### create and edit blog
 [![solarized dualmode](https://github.com/vanessachem/node-blogger/blob/master/assets/create_edit.gif)](#features)
 
+#### comments
+[![solarized dualmode](https://github.com/vanessachem/node-blogger/blob/master/assets/comments.gif)](#features)

@@ -74,6 +74,7 @@ module.exports = (app) => {
         let query = {
             userId: req.params.userId
         }
+        let requestUserId = req.user ? req.user.id : null
         let posts = await Post.promise.find(query)
         let dataUri = new DataUri()
         for (var post of posts) {
@@ -82,14 +83,17 @@ module.exports = (app) => {
                 post.imageData = `data:${post.image.contentType};base64,${image.base64}`
             }
         }
-        res.render('posts.ejs', {
-            posts: posts
+        res.render('post/posts.ejs', {
+            posts: posts,
+            requestUserId: requestUserId,
+            blogUserId: req.params.userId
         })
     }))
  
     //get all posts
     app.get('/posts', then(async(req, res) => {
         let posts = await Post.promise.find({})
+        let requestUserId = req.user ? req.user.id : null
         let dataUri = new DataUri()
         for (var post of posts) {
             if (post.image.data) {
@@ -97,18 +101,12 @@ module.exports = (app) => {
                 post.imageData = `data:${post.image.contentType};base64,${image.base64}`
             }
         }
-        res.render('posts.ejs', {
-            posts: posts
+        res.render('post/posts.ejs', {
+            posts: posts,
+            requestUserId: requestUserId,
+            blogUserId: null
         })
     }))
-
-
-
-    // function middleware1(req, res, next){
-    //   console.log("><req.user", req.user)
-    //   if (req.isAuthenticated()) return next()
-    //   res.redirect('/')
-    // }
 
 
     app.get('/post/:postId?', then(async(req, res) => {
@@ -137,13 +135,15 @@ module.exports = (app) => {
             return res.render('post/edit.ejs', {
                 post: post,
                 verb: 'Edit',
-                image: imageData
+                image: imageData,
+                requestUserId: requestUserId
             })
         }
         res.render('post/show.ejs', {
             post: post,
             verb: 'Edit',
-            image: imageData
+            image: imageData,
+            requestUserId: requestUserId
         })
 
     }))
@@ -173,7 +173,7 @@ module.exports = (app) => {
         }
         post.userId = req.user.id
         await post.save()
-        res.redirect('/blog/' + encodeURI(req.user.id))
+        res.redirect('/profile')
         return
     }))
 
@@ -186,17 +186,38 @@ module.exports = (app) => {
         }().catch(e => console.log('err', e))
     })
 
-    app.post('/logincomment', passport.authenticate('local-login'), then(async(req, res) => {
-        let post = await Post.promise.findById(req.body.postId)
-        if (post) {
-            post.comments.push({
-                content: req.body.comment,
-                username: req.user.username
-            })
-            await post.save()
-        }
+app.post('/comment', isLoggedIn, then(async(req, res) => {
+    //console.log('comment req.body', req.body)
+    
 
-        res.redirect('/post/' + encodeURI(req.body.postId))
-    }))
+    let post = await Post.promise.findById(req.body.postId)
+    console.log(">< post")
+    if (post) {
+      post.comments.push({
+          content: req.body.comment,
+          username: req.user.username
+        })
+      await post.save()
+    }
+
+    res.redirect('/post/' +req.body.postId )
+ }))
+
+  app.post('/logincomment', passport.authenticate('local-login'), then(async(req, res) => {
+    //console.log('comment req.body', req.body)
+
+    // get the post document
+    let post = await Post.promise.findById(req.body.postId)
+    if (post) {
+      post.comments.push({
+          content: req.body.comment,
+          username: req.user.username
+        })
+      await post.save()
+    }
+
+     res.redirect('/post/' +req.body.postId )
+   }))
+
 
 }

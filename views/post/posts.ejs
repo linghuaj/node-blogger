@@ -21,7 +21,7 @@
     <div class="container">
 
         <div class="page-header text-center">
-            <h1><span class="fa fa-user"></span> Blog Page</h1>
+            <h1><span class="fa fa-user"></span>Posts <%= blogUserId %></h1>
         </div>
 
         <% if (typeof message !== 'undefined' && message.length > 0) { %>
@@ -34,6 +34,9 @@
             <img src="<%= posts[i].imageData %>" alt="image" style="height: 100px; width: 100px"/>
             <% } %>
             <a class="postTitle" href="/post/<%= posts[i].id%>"><%= posts[i].title %></a>
+            <span>Author: 
+                    <%= posts[i].userId %>
+            </span>
             <article><%= posts[i].content %> </article>
         </div>
         <% } %>
