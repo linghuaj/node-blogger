@@ -50,9 +50,32 @@ module.exports = (app) => {
     })
 
 
+  app.get('/blog/:userId', then(async(req, res) =>{
+       let query = {userId: req.params.userId}
+       let posts =  await Post.promise.find(query)
+       let dataUri = new DataUri()
+       for (var post of posts){
+        if (post.image.data) {
+          let image = dataUri.format('.' + post.image.contentType.split('/').pop(), post.image.data)
+          post.imageData = `data:${post.image.contentType};base64,${image.base64}`
+        }
+       }
+       res.render('posts.ejs', {
+          posts: posts
+       })
+  }))
+
+
+// function middleware1(req, res, next){
+//   console.log("><req.user", req.user)
+//   if (req.isAuthenticated()) return next()
+//   res.redirect('/')
+// }
+
 
   app.get('/post/:postId?', then(async(req, res) => {
       let postId = req.params.postId
+      let requestUserId = req.user? req.user.id: null
       if (!postId) {
         res.render('post.ejs', {
           post: {},
@@ -70,16 +93,28 @@ module.exports = (app) => {
         image = dataUri.format('.' + post.image.contentType.split('/').pop(), post.image.data)
         imageData = `data:${post.image.contentType};base64,${image.base64}`
       }
-      console.log(">< image", image)
-      res.render('post.ejs', {
-        post: post,
-        verb: 'Edit',
-        image: imageData
-      })
 
+      console.log("req user id", requestUserId);
+
+      console.log("><post userid", post);
+
+      if (requestUserId && requestUserId == post.userId){
+
+          return res.render('post/edit.ejs', {
+              post: post,
+              verb: 'Edit',
+              image: imageData
+            })
+      }
+       res.render('post/show.ejs', {
+          post: post,
+          verb: 'Edit',
+          image: imageData
+       })
+     
     }))
 
-  app.post('/post/:postId?', then(async(req, res) => {
+  app.post('/post/:postId?', isLoggedIn, then(async(req, res) => {
       let postId = req.params.postId
       let post
       if (!postId) {
@@ -97,15 +132,14 @@ module.exports = (app) => {
         post.image.data = await fs.promise.readFile(file.path)
         post.image.contentType = file.headers['content-type']
       }
-      //console.log(file, title, content, post)
-
       // if (!postId) {
       //     // assign user id to the post
       //     post.user_id = req.user._id
       // }
+      post.userId = req.user.id
       await post.save()
       //TODO
-      res.redirect('/blog/' + encodeURI(req.user.blogTitle))
+      res.redirect('/blog/' + encodeURI(req.user.id))
       return
    }))
 

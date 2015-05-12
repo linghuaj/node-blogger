@@ -29,7 +29,7 @@ let postSchema = mongoose.Schema({
         data: Buffer,
         contentType: String
     },
-    // user_id: Schema.ObjectId,
+    userId: Schema.ObjectId,
     created: {
         type: Date,
         default: Date.now

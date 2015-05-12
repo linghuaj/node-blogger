@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+    <title>Blogger</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <style>
+        body         { padding-top:80px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="col-sm-6 col-sm-offset-3">
+            <% if (typeof message !== 'undefined' && message.length > 0) { %>
+            <div class="alert alert-danger"><%= message %></div>
+            <% } %>
+            <h1> <%=post.title%> </h1>
+            <article><%=post.content %></article>
+            <label>Image</label>
+            <% if (post.image && post.image.data) { %>
+            <img src="<%= image %>" alt="image" style="height: 200px; width: 200px"/>
+            <% } %>
+        </div>
+    </div>
+</body>
