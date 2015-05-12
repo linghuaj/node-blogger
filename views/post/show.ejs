@@ -15,6 +15,9 @@
             <% if (typeof message !== 'undefined' && message.length > 0) { %>
             <div class="alert alert-danger"><%= message %></div>
             <% } %>
+            <% if (canEdit) { %>
+            <a type="button" class="btn btn-default btn-sm delete" href="/post/edit/<%= post.id%>">Edit</a>
+            <% } %>
             <h1> <%=post.title%> </h1>
             <article><%=post.content %></article>
             <label>Image</label>

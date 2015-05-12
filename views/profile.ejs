@@ -68,7 +68,8 @@
                 <td><%= posts[i].title %></td>
                 <td><%= posts[i].created.toLocaleDateString() %></td>
                 <td> <%= posts[i].updated.toLocaleDateString() %></td>
-                <td> <a type="button" class="btn btn-default btn-sm delete" href="/post/<%= posts[i].id%>">Edit</a></td>
+                <td> <a type="button" class="btn btn-default btn-sm delete" href="/post/<%= posts[i].id%>">View</a></td>
+                <td> <a type="button" class="btn btn-default btn-sm delete" href="/post/edit/<%= posts[i].id%>">Edit</a></td>
                 <td><a type="button" data-id="<%= posts[i]._id %>" class="btn btn-default btn-sm delete">Delete</a></td>
             </tr>
 

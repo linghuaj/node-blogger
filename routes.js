@@ -131,23 +131,45 @@ module.exports = (app) => {
             image = dataUri.format('.' + post.image.contentType.split('/').pop(), post.image.data)
             imageData = `data:${post.image.contentType};base64,${image.base64}`
         }
-
-        if (requestUserId && (requestUserId == post.userId)) {
-
-            return res.render('post/edit.ejs', {
-                post: post,
-                verb: 'Edit',
-                image: imageData,
-                requestUserId: requestUserId
-            })
-        }
         res.render('post/show.ejs', {
+            post: post,
+            verb: 'Edit',
+            image: imageData,
+            requestUserId: requestUserId,
+            //show edit button or not
+            canEdit: requestUserId && (requestUserId == post.userId)
+        })
+
+    }))
+
+    app.get('/post/edit/:postId?', then(async(req, res) => {
+        let postId = req.params.postId
+        let requestUserId = req.user ? req.user.id : null
+        if (!postId) {
+            res.render('post/edit.ejs', {
+                post: {
+                    comments: []
+                },
+                verb: 'Create'
+            })
+            return
+        }
+        let post = await Post.promise.findById(postId)
+        if (!post) res.status(404).send('Not found')
+
+        let dataUri = new DataUri()
+        let image
+        let imageData
+        if (post.image.data) {
+            image = dataUri.format('.' + post.image.contentType.split('/').pop(), post.image.data)
+            imageData = `data:${post.image.contentType};base64,${image.base64}`
+        }
+        return res.render('post/edit.ejs', {
             post: post,
             verb: 'Edit',
             image: imageData,
             requestUserId: requestUserId
         })
-
     }))
 
     app.post('/post/:postId?', isLoggedIn, then(async(req, res) => {
@@ -175,7 +197,8 @@ module.exports = (app) => {
         }
         post.userId = req.user.id
         await post.save()
-        res.redirect('/profile')
+        postId = post.id
+        res.redirect('/post/' + postId)
         return
     }))
 
