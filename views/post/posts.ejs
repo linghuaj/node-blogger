@@ -18,27 +18,44 @@
     </script>
 </head>
 <body>
-    <div class="container">
+  <div class="container">
+   <nav class="navbar navbar-default">
+       <div class="container-fluid">
 
-        <div class="page-header text-center">
-            <h1><span class="fa fa-user"></span>Posts <%= blogUserId %></h1>
-        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li ><a href="/profile">Profile</a></li>
+              <li><a href="/posts">All Posts</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+              <li><a href="/logout">logout</a></li>
+          </ul>
+      </div>
+  </div>
+</nav>
+</div>
 
-        <% if (typeof message !== 'undefined' && message.length > 0) { %>
-        <div class="alert alert-danger"><%= message %></div>
+<div class="container">
+
+    <div class="page-header text-center">
+        <h1><span class="fa fa-user"></span>Posts <%= blogUserId %></h1>
+    </div>
+
+    <% if (typeof message !== 'undefined' && message.length > 0) { %>
+    <div class="alert alert-danger"><%= message %></div>
+    <% } %>
+
+    <% for (var i=0; i<posts.length; i++) { %>
+    <div class="row">
+        <% if (posts[i].image && posts[i].image.data) { %>
+        <img src="<%= posts[i].imageData %>" alt="image" style="height: 100px; width: 100px"/>
         <% } %>
-
-        <% for (var i=0; i<posts.length; i++) { %>
-        <div class="row">
-            <% if (posts[i].image && posts[i].image.data) { %>
-            <img src="<%= posts[i].imageData %>" alt="image" style="height: 100px; width: 100px"/>
-            <% } %>
-            <a class="postTitle" href="/post/<%= posts[i].id%>"><%= posts[i].title %></a>
-            <span>Author: 
-                <%= posts[i].userId %>
-            </span>
-            <article><%= posts[i].content %> </article>
-        </div>
-        <% } %>
-    </body>
-    </html>
+        <a class="postTitle" href="/post/<%= posts[i].id%>"><%= posts[i].title %></a>
+        <span>Author: 
+            <%= posts[i].userId %>
+        </span>
+        <article><%= posts[i].content %> </article>
+    </div>
+    <% } %>
+</body>
+</html>
