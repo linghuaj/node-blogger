@@ -9,38 +9,37 @@
     </style>
 </head>
 <body>
-<div class="container">
-<div class="col-sm-6 col-sm-offset-3">
-    <h1><span class="fa fa-sign-in"></span> <%= verb %> Post</h1>
- <!--    <a href="/logout" class="btn btn-default btn-sm">Logout</a> -->
+    <div class="container">
+        <div class="col-sm-6 col-sm-offset-3">
+            <h1><span class="fa fa-sign-in"></span> <%= verb %> Post</h1>
+            <!--    <a href="/logout" class="btn btn-default btn-sm">Logout</a> -->
 
-    <% if (typeof message !== 'undefined' && message.length > 0) { %>
-        <div class="alert alert-danger"><%= message %></div>
-    <% } %>
-
-    <form action="/post/<%= post.id %>" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-            <label>Title</label>
-            <input type="text" class="form-control" name="title" value="<%=post.title%>">
-        </div>
-        <div class="form-group">
-            <label>Contents</label>
-            <input type="text" class="form-control" name="content" value="<%=post.content %>">
-        </div>
-        <div class="form-group">
-            <label>Image</label>
-            <% if (post.image && post.image.data) { %>
-                <img src="<%= image %>" alt="image" style="height: 200px; width: 200px"/>
+            <% if (typeof message !== 'undefined' && message.length > 0) { %>
+            <div class="alert alert-danger"><%= message %></div>
             <% } %>
 
-            <input type="file" class="form-control" name="image" accept="image/*">
+            <form action="/post/<%= post.id %>" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" class="form-control" name="title" value="<%=post.title%>">
+                </div>
+                <div class="form-group">
+                    <label>Contents</label>
+                    <input type="text" class="form-control" name="content" value="<%=post.content %>">
+                </div>
+                <div class="form-group">
+                    <label>Image</label>
+                    <% if (post.image && post.image.data) { %>
+                    <img src="<%= image %>" alt="image" style="height: 200px; width: 200px"/>
+                    <% } %>
+
+                    <input type="file" class="form-control" name="image" accept="image/*">
+                </div>
+                <button type="submit" class="btn btn-warning btn-lg">Save</button>
+            </form>
+
         </div>
-
-        <button type="submit" class="btn btn-warning btn-lg">Save</button>
-    </form>
-
-</div>
-</div>
+    </div>
 
 
     <div class="container">

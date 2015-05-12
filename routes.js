@@ -43,22 +43,22 @@ module.exports = (app) => {
 
         let comments = []
         for (let post of posts) {
-          if (post.comments && post.comments.length > 0) {
-            // take the last comment in the array as the latest comment
-            let comment = post.comments[post.comments.length-1]
+            if (post.comments && post.comments.length > 0) {
+                // take the last comment in the array as the latest comment
+                let comment = post.comments[post.comments.length - 1]
 
-            comments.push({
-              content: comment.content.substr(0, 124),
-              username: comment.username,
-              created: comment.created,
-              postLink: "/post/" + post.id
-            })
-          }
+                comments.push({
+                    content: comment.content.substr(0, 124),
+                    username: comment.username,
+                    created: comment.created,
+                    postLink: "/post/" + post.id
+                })
+            }
         }
         res.render('profile.ejs', {
             user: req.user,
             posts: posts,
-            comments: [],
+            comments: comments,
             message: req.flash('error'),
 
         })
@@ -89,7 +89,7 @@ module.exports = (app) => {
             blogUserId: req.params.userId
         })
     }))
- 
+
     //get all posts
     app.get('/posts', then(async(req, res) => {
         let posts = await Post.promise.find({})
@@ -114,7 +114,9 @@ module.exports = (app) => {
         let requestUserId = req.user ? req.user.id : null
         if (!postId) {
             res.render('post/edit.ejs', {
-                post: {comments: []},
+                post: {
+                    comments: []
+                },
                 verb: 'Create'
             })
             return
@@ -186,38 +188,34 @@ module.exports = (app) => {
         }().catch(e => console.log('err', e))
     })
 
-app.post('/comment', isLoggedIn, then(async(req, res) => {
-    //console.log('comment req.body', req.body)
-    
+    app.post('/comment', isLoggedIn, then(async(req, res) => {
 
-    let post = await Post.promise.findById(req.body.postId)
-    console.log(">< post")
-    if (post) {
-      post.comments.push({
-          content: req.body.comment,
-          username: req.user.username
-        })
-      await post.save()
-    }
+        let post = await Post.promise.findById(req.body.postId)
+        if (post) {
+            post.comments.push({
+                content: req.body.comment,
+                username: req.user.username
+            })
+            await post.save()
+        }
 
-    res.redirect('/post/' +req.body.postId )
- }))
+        res.redirect('/post/' + req.body.postId)
+    }))
 
-  app.post('/logincomment', passport.authenticate('local-login'), then(async(req, res) => {
-    //console.log('comment req.body', req.body)
+    app.post('/logincomment', passport.authenticate('local-login'), then(async(req, res) => {
 
-    // get the post document
-    let post = await Post.promise.findById(req.body.postId)
-    if (post) {
-      post.comments.push({
-          content: req.body.comment,
-          username: req.user.username
-        })
-      await post.save()
-    }
+        // get the post document
+        let post = await Post.promise.findById(req.body.postId)
+        if (post) {
+            post.comments.push({
+                content: req.body.comment,
+                username: req.user.username
+            })
+            await post.save()
+        }
 
-     res.redirect('/post/' +req.body.postId )
-   }))
+        res.redirect('/post/' + req.body.postId)
+    }))
 
 
 }

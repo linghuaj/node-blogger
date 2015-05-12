@@ -29,3 +29,7 @@ Time spent: `<12 hours>`
 
 #### comments
 [![solarized dualmode](https://github.com/vanessachem/node-blogger/blob/master/assets/comments.gif)](#features)
+
+
+#### Fixed comments display on profile page
+[![solarized dualmode](https://github.com/vanessachem/node-blogger/blob/master/assets/fixed_comments.png)](#features)
