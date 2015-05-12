@@ -19,6 +19,9 @@ Time spent: `<12 hours>`
 
 
 ### Walkthrough 
+sign up
+[![solarized dualmode](https://github.com/vanessachem/node-blogger/blob/master/assets/signup.gif)](#features)
 
-![Video Walkthrough](https://github.com/annelin07/blogger-demo/blob/master/bloggerWT.gif)
+login
+[![solarized dualmode](https://github.com/vanessachem/node-blogger/blob/master/assets/login.gif)](#features)
 
