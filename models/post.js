@@ -3,17 +3,17 @@ let Schema = mongoose.Schema
 
 require('songbird')
 
-// let commentSchema = Schema({
-//     content: {
-//         type: String,
-//         required: true
-//     },
-//     username: String,
-//     created: {
-//         type: Date,
-//         default: Date.now
-//     }
-// })
+let commentSchema = Schema({
+    content: {
+        type: String,
+        required: true
+    },
+    username: String,
+    created: {
+        type: Date,
+        default: Date.now
+    }
+})
 
 
 let postSchema = mongoose.Schema({
@@ -37,8 +37,8 @@ let postSchema = mongoose.Schema({
     updated: {
         type: Date,
         default: Date.now
-    }
-    // comments: [commentSchema],
+    },
+    comments: [commentSchema],
 })
 
 postSchema.pre('save', function(next) {

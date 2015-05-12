@@ -3,7 +3,6 @@ let multiparty = require('multiparty')
 let then = require('express-then')
 let isLoggedIn = require('./middleware/isLoggedIn')
 let Post = require('./models/post')
-    // let util = require('util')
 let DataUri = require('datauri')
 module.exports = (app) => {
     let passport = app.passport
@@ -37,12 +36,33 @@ module.exports = (app) => {
         failureFlash: true
     }))
 
-    app.get('/profile', isLoggedIn, (req, res) => {
+    app.get('/profile', isLoggedIn, then(async(req, res) => {
+        let posts = await Post.promise.find({
+            userId: req.user.id
+        })
+
+        let comments = []
+        for (let post of posts) {
+          if (post.comments && post.comments.length > 0) {
+            // take the last comment in the array as the latest comment
+            let comment = post.comments[post.comments.length-1]
+
+            comments.push({
+              content: comment.content.substr(0, 124),
+              username: comment.username,
+              created: comment.created,
+              postLink: "/post/" + post.id
+            })
+          }
+        }
         res.render('profile.ejs', {
             user: req.user,
-            message: req.flash('error')
+            posts: posts,
+            comments: [],
+            message: req.flash('error'),
+
         })
-    })
+    }))
 
     app.get('/logout', (req, res) => {
         req.logout()
@@ -66,6 +86,22 @@ module.exports = (app) => {
             posts: posts
         })
     }))
+ 
+    //get all posts
+    app.get('/posts', then(async(req, res) => {
+        let posts = await Post.promise.find({})
+        let dataUri = new DataUri()
+        for (var post of posts) {
+            if (post.image.data) {
+                let image = dataUri.format('.' + post.image.contentType.split('/').pop(), post.image.data)
+                post.imageData = `data:${post.image.contentType};base64,${image.base64}`
+            }
+        }
+        res.render('posts.ejs', {
+            posts: posts
+        })
+    }))
+
 
 
     // function middleware1(req, res, next){
@@ -80,7 +116,7 @@ module.exports = (app) => {
         let requestUserId = req.user ? req.user.id : null
         if (!postId) {
             res.render('post/edit.ejs', {
-                post: {},
+                post: {comments: []},
                 verb: 'Create'
             })
             return
@@ -96,11 +132,7 @@ module.exports = (app) => {
             imageData = `data:${post.image.contentType};base64,${image.base64}`
         }
 
-        console.log("req user id", requestUserId);
-
-        console.log("><post userid", post);
-
-        if (requestUserId && requestUserId == post.userId) {
+        if (requestUserId && (requestUserId == post.userId)) {
 
             return res.render('post/edit.ejs', {
                 post: post,
@@ -139,16 +171,32 @@ module.exports = (app) => {
             post.image.data = await fs.promise.readFile(file.path)
             post.image.contentType = file.headers['content-type']
         }
-        // if (!postId) {
-        //     // assign user id to the post
-        //     post.user_id = req.user._id
-        // }
         post.userId = req.user.id
         await post.save()
-        //TODO
         res.redirect('/blog/' + encodeURI(req.user.id))
         return
     }))
 
+    app.delete('/post/:postId', isLoggedIn, (req, res) => {
+        async() => {
+            let postId = req.params.postId
+            let post = await Post.promise.findById(postId)
+            if (post) await post.promise.remove()
+            res.end()
+        }().catch(e => console.log('err', e))
+    })
+
+    app.post('/logincomment', passport.authenticate('local-login'), then(async(req, res) => {
+        let post = await Post.promise.findById(req.body.postId)
+        if (post) {
+            post.comments.push({
+                content: req.body.comment,
+                username: req.user.username
+            })
+            await post.save()
+        }
+
+        res.redirect('/post/' + encodeURI(req.body.postId))
+    }))
 
 }
