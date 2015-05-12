@@ -19,8 +19,8 @@ Time spent: `<12 hours>`
 
 
 ### Walkthrough 
-sign up
+#### sign up
 [![solarized dualmode](https://github.com/vanessachem/node-blogger/blob/master/assets/signup.gif)](#features)
-login
+#### login
 [![solarized dualmode](https://github.com/vanessachem/node-blogger/blob/master/assets/login.gif)](#features)
 
