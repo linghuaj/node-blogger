@@ -11,7 +11,7 @@ Time spent: `<12 hours>`
 #####Signup
 - [x] User can Signup, Login and Logout with input validation
 - [x] Session and user accounts are persisted in a data store
-- [] User can create and edit a blog post
+- [x] User can create and edit a blog post
 - [] User can view blog posts with details on their Profile
 - [] User can comments on their blog posts on their Profile
 - [] User can view a anyone's blog with posts and comments at the specified url
