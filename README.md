@@ -15,7 +15,7 @@ Time spent: `<12 hours>`
 - [x] User can view blog posts with details on their Profile
 - [x] User can comments on their blog posts on their Profile
 - [x] User can view a anyone's blog with posts and comments at the specified url
-- [] Logged In users can comment on any blog post
+- [x] Logged In users can comment on any blog post
 
 
 ### Walkthrough 
